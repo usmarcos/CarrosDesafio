@@ -2,25 +2,29 @@ package service;
 
 import model.Carro;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 
 public class CarroServiceTest {
     private CarroService carroService = new CarroServiceImpl();
     private Carro carro;
-    private void criarCarro() {
+
+    /**
+     * Cria um novo carro sempre antes de iniciar os testes para validação
+     */
+    @Before
+    public void inicializaNovoCarro() {
         carro = new Carro("Azul", "Fiat", "Uno", 2015, 150);
     }
 
     @Test
     public void deveAcelerarCorretamente() {
-        // Given
-        criarCarro();
+        //Given
 
         // When
         carroService.ligar(carro);
         carroService.acelerar(carro, 10);
-
         // Then
         Assert.assertEquals(carro.getVelocidadeAtual(), 10);
     }
@@ -28,13 +32,11 @@ public class CarroServiceTest {
     @Test
     public void deveFreiarCorretamente() {
         // Given
-        criarCarro();
 
         // When
         carroService.ligar(carro);
         carroService.acelerar(carro, 10);
         carroService.frear(carro, 5);
-
         // Then
         Assert.assertEquals(carro.getVelocidadeAtual(), 5);
     }
@@ -42,48 +44,43 @@ public class CarroServiceTest {
     @Test
     public void deveLigarCorretamente() {
         //Given
-        criarCarro();
-        //Quando
+        //When
         carroService.ligar(carro);
-        //Então
+        //Then
         Assert.assertTrue(carro.isLigado());
     }
 
     @Test
     public void deveIniciarDesligado() {
         //Given
-        criarCarro();
-        //Quando
+        //When
         carroService.acelerar(carro, 10);
-        //Então
+        //Then
         Assert.assertFalse(carro.isLigado());
     }
 
     @Test
     public void naoDeveAcelerarDesligado() {
         //Given
-        criarCarro();
-        //Quando
+        //When
         carroService.acelerar(carro, 10);
-        //Então
+        //Then
         Assert.assertEquals(carro.getVelocidadeAtual(), 0);
     }
 
     @Test
     public void naoDeveTerVelocidadeMenorQueZero() {
-        //Dado
-        criarCarro();
-        //Quando
+        //Given
+        //When
         carroService.ligar(carro);
         carroService.frear(carro, 20);
-        //Então
+        //Then
         Assert.assertEquals(carro.getVelocidadeAtual(), 0);
     }
 
     @Test
     public void naoDevePassarDaVelocidadeMaxima() {
         //Given
-        criarCarro();
         //When
         carroService.ligar(carro);
         carroService.acelerar(carro, 90);
@@ -91,6 +88,27 @@ public class CarroServiceTest {
         //Then
         Assert.assertEquals(carro.getVelocidadeAtual(), carro.getVelocidadeMaxima());
     }
+    @Test
+    public void naoDeveDesligarCarroEmMovimento(){
+        //Given
+        //When
+        carroService.ligar(carro);
+        carroService.acelerar(carro,1000);
+        carroService.desligar(carro);
+        //Then
+        Assert.assertEquals(carro.getVelocidadeAtual(), carro.getVelocidadeMaxima());
+        Assert.assertTrue(carro.isLigado());
+    }
+    @Test public void deveRetornarEstadoAtualCorretamente(){
+        //Given
 
+        //When
+            //usando a variável apenas para ficar claro o when.
+        String esperado = carroService.estadoAtual(carro);
+
+        //Then
+        Assert.assertEquals(esperado,carro.toString());
+        //Assert.assertEquals(carroService.estadoAtual(carro),carro.toString());
+    }
 }
 

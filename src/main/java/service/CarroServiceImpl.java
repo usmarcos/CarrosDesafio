@@ -34,6 +34,7 @@ public class CarroServiceImpl implements CarroService {
 
     @Override
     public void desligar(Carro carro) {
+        if(carro.isLigado())return;
         carro.setLigado(false);
     }
 
